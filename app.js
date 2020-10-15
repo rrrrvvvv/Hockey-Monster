@@ -42,6 +42,12 @@ app.get('/populateplayers', (req, res, next) => {
 
 app.use('/scripts', scriptRoutes)
 
+app.get('/testing', (req,res,next) => {
+    res.status(201).json({
+        message: 'message'
+    })
+})
+
 
 
 module.exports = app
