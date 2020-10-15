@@ -3,7 +3,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const path = require('path')
-const scripts = require('./scripts/scripts')
+const scriptRoutes = require('./routes/scripts')
 
 mongoose.connect('mongodb+srv://Geoff:E7VX4v6VZ2MBvBA@cluster0.nq3nb.mongodb.net/Cluster0?retryWrites=true&w=majority')
     .then(() => {
@@ -21,11 +21,26 @@ app.use((req, res, next) => {
     next()
 })
 
+app.use(bodyParser.json())
+
+app.set('views', './views')
+
 app.set('view engine', 'ejs')
 
-app.get('/populateplayers', (req, res,next) => {
-    res.render('index', { scripts:scripts })
+app.get('/populateplayers', (req, res, next) => {
+    res.render('index')
+    next()
 })
+
+// app.get('/scripts', (req, res, next) => {
+    
+//     res.status(201).jsonp({
+//         message: 'hello'
+//     })  
+//     next()
+// })
+
+app.use('/scripts', scriptRoutes)
 
 
 
