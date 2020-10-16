@@ -1,5 +1,6 @@
 const https = require('https')
-const script = require('../scripts/scripts')
+//const script = require('../scripts/scripts')
+const Player = require('../models/player')
 
 
 exports.getTeamIds = (req, res, next) => {
@@ -42,7 +43,7 @@ exports.getTeamIds = (req, res, next) => {
                             parsedData: parsedData
                         }
 
-                       // console.log(teamIds)
+                        // console.log(teamIds)
                         // res.status(201).json(totalData)
                         resolve(totalData)
                     } catch (error) {
@@ -70,7 +71,7 @@ exports.getTeamIds = (req, res, next) => {
 
         return new Promise((resolve, reject) => {
 
-         //   console.log('inside promise')
+            //   console.log('inside promise')
 
             const request = https.request(options, (response) => {
 
@@ -102,52 +103,63 @@ exports.getTeamIds = (req, res, next) => {
         })
     }
 
-    // getTeamIds().then((teamIds) => {
-    //     res.status(201).json(teamIds)
-    // })
-
     async function populatePlayers() {
         const players = []
-
-
         try {
             console.log("in populate players")
             const allDataPromise = await getTeamIds()
             const allData = allDataPromise
             const teamIds = allData.teamIds
-
-            for ( id of teamIds) {
-             //   console.log(id)
-               const playersPromise = await getPlayersFromTeam(id)
+            for (id of teamIds) {
+                //   console.log(id)
+                const playersPromise = await getPlayersFromTeam(id)
                 const newPlayers = playersPromise
-                console.log(newPlayers)
-               for (player of newPlayers.teams[0].roster.roster) {
-                   players.push(player)
-               }
+                // console.log(newPlayers)
+                for (player of newPlayers.teams[0].roster.roster) {
+                    // players.push(buildPlayerObject(player))
+                    const newPlayer = new Player({
+                        name: player.person.fullName,
+                        NHLId: parseInt(player.person.id),
+                        position: player.position.name
+                    })
+                    newPlayer.save().then((newPlayer) => {
+                        players.push(newPlayer)
+                    })
+                    .catch((error) => {
+                        //console.log(error)
+                    })
+                }
             }
+           // const playerCollection = {}
 
-           // const rosterPromise = await getPlayersFromTeam(1)
-          //  const roster = rosterPromise
+            // Player.find({}, (err, docs) => {
+            //     playerCollection = docs
+            // }).then(() => {
+            //     res.status(201).json({
+            //         allData: allData,
+            //         players: players,
+            //         playerCollection: playerCollection
+            //     })
+            //     .catch((error) => {
 
-           // console.log(roster)
-
-
+            //     })
+            // })
+           // const playerCollection = playerCollectionPromise
+           // console.log(playerCollection)
+           // const playerStatsPromise = await getRawPlayerStats(id)
 
 
             res.status(201).json({
                 allData: allData,
                 players: players
-                
+              //  playerCollection: playerCollection
             })
-
         } catch (error) {
             res.status(400).json({
                 error: error
             })
-
         }
     }
-
     populatePlayers()
 }
 
@@ -158,47 +170,19 @@ exports.getTeamRosters = (req, res, next) => {
     console.log('hello')
 }
 
-// async function populatePlayers() {
-//     // gets all players into an array from internet
-//     try {
-//       const teamIdsPromise = getTeamIds()
-//       const teamIds = await teamIdsPromise
-//       const players = [] // want an array of all players playing in the NHL
-
-//       for (id of teamIds) {
-//         const playersPromise = getPlayersFromTeam(id)
-//         const newPlayers = await playersPromise
-//         for (player of newPlayers.teams[0].roster.roster) {
-//           players.push(buildPlayerObject(player)) // returns a player, call for each player on roster in each team
+// function getRawPlayerStats(id) {
+//     // console.log(id)
+//     // retrieves stats object, appends to player
+//     return new Promise((resolve, reject) => {
+//       const apiRequestData = new XMLHttpRequest()
+//       apiRequestData.open('GET', 'https://statsapi.web.nhl.com/api/v1/people/' + id + '/stats?stats=yearByYear')
+//       apiRequestData.onreadystatechange = function () {
+//         if (apiRequestData.readyState === 4) {
+//           const response = JSON.parse(apiRequestData.response)
+//           resolve(response)
+//           reject('error')
 //         }
 //       }
-
-
-
-//       for (player of players) {
-//         let rawPlayerStats = {}
-//         const rawPlayerStatsPromise = getRawPlayerStats(player.id)
-//         rawPlayerStats = await rawPlayerStatsPromise
-
-
-//         player.stats = filterRawPlayerStats(rawPlayerStats, player)
-
-
-//       }
-
-//       const duplicates = players.filter((value, index, arr) => {
-//         let x = index + 1
-//         for (x; x < arr.length; x++) {
-//           if (arr[x].id == value.id) {
-//             players.splice(x, 1)
-//           }
-//         }
-
-//       })
-
-
-//       return players
-//     } catch (errorResponse) {
-//       console.log('error')
-//     }
+//       apiRequestData.send()
+//     })
 //   }
