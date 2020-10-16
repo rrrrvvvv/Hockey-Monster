@@ -3,7 +3,8 @@ const router = express.Router()
 
 const scriptsCtrl = require("../controllers/scripts")
 
-router.get('/', scriptsCtrl.getPlayerIds)
+router.get('/', scriptsCtrl.getTeamIds)
+router.get('/', scriptsCtrl.getTeamRosters)
 
 
 module.exports = router

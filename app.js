@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const path = require('path')
 const scriptRoutes = require('./routes/scripts')
+const populatePlayersRoutes = require('./routes/populateplayers')
 
 mongoose.connect('mongodb+srv://Geoff:E7VX4v6VZ2MBvBA@cluster0.nq3nb.mongodb.net/Cluster0?retryWrites=true&w=majority')
     .then(() => {
@@ -27,10 +28,12 @@ app.set('views', './views')
 
 app.set('view engine', 'ejs')
 
-app.get('/populateplayers', (req, res, next) => {
-    res.render('index')
-    next()
-})
+// app.get('/populateplayers', (req, res, next) => {
+//     res.render('index')
+//     next()
+// })
+
+app.use('/populateplayers', populatePlayersRoutes)
 
 // app.get('/scripts', (req, res, next) => {
     
@@ -41,12 +44,6 @@ app.get('/populateplayers', (req, res, next) => {
 // })
 
 app.use('/scripts', scriptRoutes)
-
-app.get('/testing', (req,res,next) => {
-    res.status(201).json({
-        message: 'message'
-    })
-})
 
 
 
