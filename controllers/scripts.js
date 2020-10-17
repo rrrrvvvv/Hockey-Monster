@@ -1,7 +1,8 @@
 const https = require('https')
-const {
-    resolve
-} = require('path')
+const player = require('../models/player')
+// const {
+//     resolve
+// } = require('path')
 //const script = require('../scripts/scripts')
 const Player = require('../models/player')
 
@@ -42,10 +43,10 @@ exports.getTeamIds = (req, res, next) => {
         })
     }
 
-    function getPlayerIds(id) {
+    function getPlayers(id) {
         return new Promise((resolve, reject) => {
             let rawData = ''
-            let playerIds = []
+            let players = []
             let options = {
                 host: "statsapi.web.nhl.com",
                 path: '/api/v1/teams/' + String(id) + '/?expand=team.roster&season=20182019',
@@ -64,11 +65,16 @@ exports.getTeamIds = (req, res, next) => {
                         // let playerIds = []
                         let roster = JSON.parse(rawData)
                         //console.log(roster.teams[0].roster.roster)
-                        for (player of roster.teams[0].roster.roster) {
+                        for (p of roster.teams[0].roster.roster) {
                             // console.log(player.person.id)
-                            playerIds.push(parseInt(player.person.id))
+                            let newPlayer = new Player({
+                                name: p.person.fullName,
+                                NHLId: p.person.id,
+                                position: p.position.name
+                            })
+                            players.push(newPlayer)
                         }
-                        resolve(playerIds)
+                        resolve(players)
                     } catch (error) {
                         reject(error)
                     }
@@ -78,13 +84,16 @@ exports.getTeamIds = (req, res, next) => {
         })
     }
 
-    function getPlayerStats(id) {
+    function getPlayerStats(player) {
         //given an array of Ids return a promise to an array of players with stats
         return new Promise((resolve, reject) => {
+            // if (player.position == 'Goalie') {
+            //     resolve({})
+            // }
             let rawData = ''
             let options = {
                 host: "statsapi.web.nhl.com",
-                path: '/api/v1/people/' + String(id) + '/stats?stats=statsSingleSeason&season=20182019',
+                path: '/api/v1/people/' + String(player.NHLId) + '/stats?stats=statsSingleSeason&season=20182019',
                 method: 'GET'
             }
             const request = new https.request(options, (response) => {
@@ -116,7 +125,7 @@ exports.getTeamIds = (req, res, next) => {
     }
 
     async function populatePlayers() {
-        let playerIds = []
+        let players = []
         let playerStats = []
         try {
             // getTeamIds() returns a promise of an array of team IDs
@@ -124,32 +133,33 @@ exports.getTeamIds = (req, res, next) => {
             const teamIds = teamIdsPromise
             // getPlayerIds() returns an array of player Ids, by making a call to each team id endpoint
             for (id of teamIds) {
-                const playerIdsPromise = await getPlayerIds(id)
-                const tempPlayerIds = playerIdsPromise
+                const playersPromise = await getPlayers(id)
+                const tempPlayers = playersPromise
                 //  console.log(id)
                 //  console.log(tempPlayerIds)
-                playerIds.push(tempPlayerIds)
+                players.push(tempPlayers)
             }
             // getPlayerStats() returns a single players stats from the API, parses an array of arrays where each inner array is the player ids of a sinlge team
 
-            for (i in playerIds) {
-                for (playerId of playerIds[i]) {
+            for (i in players) {
+                for (player of players[i]) {
                     // console.log(playerId)
-                    const playerStatsPromise = await getPlayerStats(playerId)
+                    const playerStatsPromise = await getPlayerStats(player)
                     const stats = playerStatsPromise
                     // console.log(stats)
-                    playerStats.push(stats)
+                   // playerStats.push(stats)
                 }
             }
             console.log('done')
+            // console.log(players)
             // for (player of playerStats) {
                 
             // }
             res.status(201).json({
                 message: 'message',
                 teamIds: teamIds,
-                playerIds: playerIds,
-                playerStats: playerStats
+                players: players
+               // playerStats: playerStats
                 //  playerCollection: playerCollection
             })
         } catch (error) {
