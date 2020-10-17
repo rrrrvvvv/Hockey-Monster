@@ -23,28 +23,9 @@ app.use((req, res, next) => {
 })
 
 app.use(bodyParser.json())
-
 app.set('views', './views')
-
 app.set('view engine', 'ejs')
-
-// app.get('/populateplayers', (req, res, next) => {
-//     res.render('index')
-//     next()
-// })
-
 app.use('/populateplayers', populatePlayersRoutes)
-
-// app.get('/scripts', (req, res, next) => {
-    
-//     res.status(201).jsonp({
-//         message: 'hello'
-//     })  
-//     next()
-// })
-
 app.use('/scripts', scriptRoutes)
-
-
 
 module.exports = app

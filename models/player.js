@@ -10,6 +10,7 @@ const playerSchema = mongoose.Schema({
         type: Number,
         unique: true
     },
+    year: String,
     position: String,
     year: String,
     goals: Number,
