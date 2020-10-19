@@ -12,27 +12,26 @@ exports.getPlayers = (req, res, next) => {
     console.log('hello')
     //teamIdsFunction = getTeamIds.getTeamIds
     async function getPlayers() {
-       // console.log('hello from get players')
+        // console.log('hello from get players')
         try {
             // returns an array
             console.log('hello from get players')
             const teamIdsPromise = await getTeamIds.getTeamIds()
             const teamIds = teamIdsPromise
-           // console.log(teamIds)
-           // return teamIds
-            // //returns array of player objects
-            // const rostersPromise = await getRosters(teamIds)
-            // const players = rostersPromise
+            //returns array of player objects
+            const rostersPromise = await getTeamIds.getRosters(teamIds)
+             const rosters = rostersPromise
             // //updates array of player objects
             // const statsPromise = await getStats(players)
             // const players = statsPromise
             // //writes player objects to database
             // const write = await write(players)
             // const check = await check(players)
-             res.status(200).json({
-                 message: 'message',
-                 players: teamIds
-             })
+            res.status(200).json({
+                message: 'message',
+                teamIds: teamIds,
+                roster: rosters
+            })
         } catch (error) {
             next(error)
             console.log(error + 'in get team Players')

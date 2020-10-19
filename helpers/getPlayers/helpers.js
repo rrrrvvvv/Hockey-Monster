@@ -1,8 +1,9 @@
 const https = require('https')
+const player = require('../../models/player')
 const Player = require('../../models/player')
 
 exports.callGenerator = function callGenerator(options) {
-    console.log('hello from call generator')
+    // console.log('hello from call generator')
     return new Promise((resolve, reject) => {
         const request = https.request(options, (response) => {
             let rawData = ''
@@ -38,13 +39,42 @@ exports.callGenerator = function callGenerator(options) {
     })
 }
 
-const filterResults = function filterResults(data, location) {
-
+exports.responseFilter = function responseFilter(data, location) {
+    switch (location) {
+        case 'getTeamIds':
+            return data
+            break
+        case 'getRosters':
+            let dataArray = Object.values(data)
+            let teamRoster = Object.values(dataArray[1][0].roster.roster)
+            let filteredTeamRoster = teamRoster.filter((value, index, array) => {
+                // console.log(value.position.code)
+                return value.position.code !== 'G'
+            })
+            data.teams[0].roster.roster = filteredTeamRoster
+            let roster = data
+            return roster
+            break
+        default:
+    }
 }
 
-const dataProcessing = function dataProcessing(data, location) {
-
+exports.dataProcessing = function dataProcessing(data, location) {
+    switch (location) {
+        case 'getTeamIds':
+            teamIds = []
+            for (tm of data.teams) {
+                let team = {
+                    id: tm.id,
+                    name: tm.teamName
+                }
+                teamIds.push(team)
+            }
+            return teamIds
+            break
+        default:
+    }
 }
 
-exports.filterResults = filterResults
-exports.dataProcessing = dataProcessing
+//exports.filterResults = filterResults
+//exports.dataProcessing = dataProcessing
