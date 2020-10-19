@@ -1,5 +1,5 @@
 const https = require('https')
-const player = require('../../models/player')
+//const player = require('../../models/player')
 const Player = require('../../models/player')
 
 exports.callGenerator = function callGenerator(options) {
@@ -59,7 +59,7 @@ exports.responseFilter = function responseFilter(data, location) {
     }
 }
 
-exports.dataProcessing = function dataProcessing(data, location) {
+exports.dataProcessing = function dataProcessing(data, location, year) {
     switch (location) {
         case 'getTeamIds':
             teamIds = []
@@ -71,6 +71,27 @@ exports.dataProcessing = function dataProcessing(data, location) {
                 teamIds.push(team)
             }
             return teamIds
+            break
+        case 'getRosters':
+            let roster = []
+            let dataArray = Object.values(data)
+            let teamRoster = Object.values(dataArray[1][0].roster.roster) 
+           // roster = dataArray
+            for (pl of teamRoster) {
+               // roster.push(player.position)
+               // console.log('once')
+                // for (pl of team) {
+                    newPlayer = new Player({
+                        name: pl.person.fullName,
+                        NHLId: pl.person.id,
+                        team: data.teams[0].abbreviation,
+                        year: year,
+                        position: pl.position.abbreviation
+                    })
+                   roster.push(newPlayer)
+                // }
+            }
+            return roster
             break
         default:
     }

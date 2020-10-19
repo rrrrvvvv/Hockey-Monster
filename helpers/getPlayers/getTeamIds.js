@@ -28,9 +28,9 @@ exports.getRosters = async function getRosters(teamIds) {
     let callResult = callPromise
     //rosters.push(callResult)
     let filteredResult = helpers.responseFilter(callResult, 'getRosters')
-    rosters.push(filteredResult)
-    // let newRoster = helpers.dataProcessing(filteredResult, 'getRosters')
-    // rosters.push(newRoster)
+   // rosters.push(filteredResult)
+     let newRoster = helpers.dataProcessing(filteredResult, 'getRosters', '20182019')
+     rosters.push(newRoster)
   }
   // let options = {
   //   host: "statsapi.web.nhl.com",

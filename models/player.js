@@ -8,6 +8,7 @@ const playerSchema = mongoose.Schema({
     NHLId:{
         type: Number
     },
+    team: String,
     year: String,
     position: String,
     year: String,
