@@ -59,8 +59,8 @@ exports.responseFilter = function responseFilter(data, location) {
            // console.log(data)
             let filteredStats = data
             if (typeof data.stats.stats[0].splits[0] === 'undefined') {
-                console.log('no player')
-                console.log(data)
+              //  console.log('no player')
+               // console.log(data)
                 return null
             }
             let statsKeys = Object.keys(data.stats.stats[0].splits[0].stat)
@@ -73,8 +73,10 @@ exports.responseFilter = function responseFilter(data, location) {
                             // return null
                         }
                         break
-                    case 'timeonIcePerGame':
-                        if (parseInt(statsValues[index].split(":"))[0] < 10) {
+                    case 'timeOnIcePerGame':
+                        let minutes = statsValues[index].split(":")
+                        if (parseInt(minutes[0]) < 10) {
+                            console.log(minutes)
                             filteredStats = null
                             //  return null
                         }

@@ -24,21 +24,23 @@ exports.getPlayers = (req, res, next) => {
             // //updates array of player objects
              const statsPromise = await getTeamIds.getStats(rosters)
              const playerStats = statsPromise
-            // //writes player objects to database
-            // const write = await getTeamIds.getPlayerswrite(players)
+            //writes player objects to database
+            const writePromise = await getTeamIds.writePlayers(playerStats)
+            const write = writePromise
             // const check = await check(players)
             res.status(200).json({
                 message: 'message',
-                teamIds: teamIds,
-                roster: rosters,
-                stats: playerStats
+              //  teamIds: teamIds,
+             //   roster: rosters,
+                stats: playerStats,
+              written: write
             })
         } catch (error) {
             next(error)
-            console.log(error + 'in get team Players')
+            console.log(error + 'in getPlayers')
             res.status(404).json({
                 error: error,
-                location: 'getTeamPlayers'
+                location: 'getPlayers'
             })
         }
     }
