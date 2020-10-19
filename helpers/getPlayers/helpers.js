@@ -56,7 +56,13 @@ exports.responseFilter = function responseFilter(data, location) {
             return roster
             break
         case 'getStats':
+           // console.log(data)
             let filteredStats = data
+            if (typeof data.stats.stats[0].splits[0] === 'undefined') {
+                console.log('no player')
+                console.log(data)
+                return null
+            }
             let statsKeys = Object.keys(data.stats.stats[0].splits[0].stat)
             let statsValues = Object.values(data.stats.stats[0].splits[0].stat)
             let check = statsKeys.filter((value, index, array) => {

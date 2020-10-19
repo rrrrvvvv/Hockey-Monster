@@ -46,9 +46,9 @@ exports.getRosters = async function getRosters(teamIds) {
 
 exports.getStats = async function getStats(players) {
   let stats = []
-   for (pl of players[0]) {
+   for (team of players) {
   //   console.log(team)
-  // for (pl of team) {
+   for (pl of team) {
     let options = {
       host: "statsapi.web.nhl.com",
    //  path: '/api/v1/people/8473544/stats?stats=statsSingleSeason&season=20182019',
@@ -61,11 +61,14 @@ exports.getStats = async function getStats(players) {
      let filteredResult = helpers.responseFilter(callResult,'getStats')
      let newPlayerStats = helpers.dataProcessing(filteredResult, 'getStats')
      stats.push(newPlayerStats)
- ///  }
+   }
  }
  let playerStats = stats.filter((value,index,array) => {
-   return value
+   console.log('null player')
+   console.log(value)
+   return (value !== null)
  })
 //console.log(playerStats)
   return playerStats
+ //return stats
 }

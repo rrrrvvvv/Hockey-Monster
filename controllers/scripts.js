@@ -25,7 +25,7 @@ exports.getPlayers = (req, res, next) => {
              const statsPromise = await getTeamIds.getStats(rosters)
              const playerStats = statsPromise
             // //writes player objects to database
-            // const write = await write(players)
+            // const write = await getTeamIds.getPlayerswrite(players)
             // const check = await check(players)
             res.status(200).json({
                 message: 'message',
