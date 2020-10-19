@@ -28,9 +28,9 @@ exports.getRosters = async function getRosters(teamIds) {
     let callResult = callPromise
     //rosters.push(callResult)
     let filteredResult = helpers.responseFilter(callResult, 'getRosters')
-   // rosters.push(filteredResult)
-     let newRoster = helpers.dataProcessing(filteredResult, 'getRosters', '20182019')
-     rosters.push(newRoster)
+    // rosters.push(filteredResult)
+    let newRoster = helpers.dataProcessing(filteredResult, 'getRosters', '20182019')
+    rosters.push(newRoster)
   }
   // let options = {
   //   host: "statsapi.web.nhl.com",
@@ -42,4 +42,30 @@ exports.getRosters = async function getRosters(teamIds) {
   // let filteredResult = helpers.responseFilter(callResult, 'getRosters')
   // let rosters = helpers.dataProcessing(filteredResult)
   return rosters
+}
+
+exports.getStats = async function getStats(players) {
+  let stats = []
+   for (pl of players[0]) {
+  //   console.log(team)
+  // for (pl of team) {
+    let options = {
+      host: "statsapi.web.nhl.com",
+   //  path: '/api/v1/people/8473544/stats?stats=statsSingleSeason&season=20182019',
+      path: '/api/v1/people/' + String(pl.NHLId) + '/stats?stats=statsSingleSeason&season=20182019',
+      method: 'GET'
+    }
+//    // console.log(pl)
+     let callPromise = await helpers.callGenerator(options)
+     let callResult = {stats: callPromise, player: pl}
+     let filteredResult = helpers.responseFilter(callResult,'getStats')
+     let newPlayerStats = helpers.dataProcessing(filteredResult, 'getStats')
+     stats.push(newPlayerStats)
+ ///  }
+ }
+ let playerStats = stats.filter((value,index,array) => {
+   return value
+ })
+//console.log(playerStats)
+  return playerStats
 }

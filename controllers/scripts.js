@@ -22,15 +22,16 @@ exports.getPlayers = (req, res, next) => {
             const rostersPromise = await getTeamIds.getRosters(teamIds)
              const rosters = rostersPromise
             // //updates array of player objects
-            // const statsPromise = await getStats(players)
-            // const players = statsPromise
+             const statsPromise = await getTeamIds.getStats(rosters)
+             const playerStats = statsPromise
             // //writes player objects to database
             // const write = await write(players)
             // const check = await check(players)
             res.status(200).json({
                 message: 'message',
                 teamIds: teamIds,
-                roster: rosters
+                roster: rosters,
+                stats: playerStats
             })
         } catch (error) {
             next(error)
