@@ -66,7 +66,7 @@ exports.getStats = async function getStats(players) {
  let playerStats = stats.filter((value,index,array) => {
    console.log('null player')
    console.log(value)
-   return (value !== null)
+   return value
  })
 //console.log(playerStats)
   return playerStats
