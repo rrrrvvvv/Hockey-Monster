@@ -23,8 +23,13 @@ const playerSchema = mongoose.Schema({
     blks: Number,
     games: Number,
     atoi: Number,
+    normalized: Boolean,
+    weighted: Boolean
+
 })
 
 playerSchema.plugin(uniqueValidator)
 
+//exports.playerSchema = playerSchema
 module.exports = mongoose.model('Player', playerSchema)
+//module.exports = mongoose.model('NormalizedPlayer', normalizedPlayerSchema)

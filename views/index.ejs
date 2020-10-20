@@ -13,6 +13,12 @@
 			apiRequest.open('GET', '../scripts')
 			apiRequest.send()
 		}
+
+		function calculateRankings() {
+			let apiRequest = new XMLHttpRequest()
+			apiRequest.open('GET', '../scripts/rank')
+			apiRequest.send()
+		}
 	</script>
 
 	<!-- <link rel="stylesheet" type="text/css" href="css\style.css"> -->
@@ -23,7 +29,7 @@
 <body>
 
 	<button type="button" id="query-button" onclick="populatePlayers()">Populate Players</button>
-	<button type="button" id="collect-player-data-button" onclick="calculateScore()">Collect Player Data</button>
+	<button type="button" id="collect-player-data-button" onclick="calculateRankings()">Collect Player Data</button>
 
 	<div id="web-query-content">
 		Content:
