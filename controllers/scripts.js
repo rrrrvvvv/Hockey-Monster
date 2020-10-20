@@ -53,16 +53,16 @@ exports.getRanks = (req,res,next) => {
     try {
         const getPlayersPromise = await getRanks.getPlayersFromDB()
         const getPlayersFromDB = getPlayersPromise
-       // const normalizedPlayersPromise = await getRanks.normalizePlayers(getPlayersFromDB)
-       // const normalizedPlayers = normalizedPlayersPromise
+        const normalizedPlayersPromise = await getRanks.normalizePlayers(getPlayersFromDB)
+        const normalizedPlayers = normalizedPlayersPromise
         //  const weightedCategories = getRanks.weightCategories(normalizedPlayers)
         
 
         console.log('ingetRanks')
         res.status(201).json({
             message: 'ingetranks',
-            players: getPlayersFromDB
-           // normalized: normalizedPlayers
+            players: getPlayersFromDB,
+            normalized: normalizedPlayers
         })
 
     } catch (error) {
