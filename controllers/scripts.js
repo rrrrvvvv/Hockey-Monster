@@ -29,11 +29,11 @@ exports.getPlayers = (req, res, next) => {
             const write = writePromise
             // const check = await check(players)
             res.status(200).json({
-                message: 'message',
+                message: 'success',
               //  teamIds: teamIds,
              //   roster: rosters,
-                stats: playerStats,
-              written: write
+              //  stats: playerStats,
+             // written: write
             })
         } catch (error) {
             next(error)

@@ -59,19 +59,11 @@ exports.getStats = async function getStats(players) {
 }
 exports.writePlayers = async function(sentPlayers) {
   let savedPlayers = []
-  let push = true
-
   for (pl of sentPlayers) {
-   // console.log(player)
-   push = true
    const savedPlayerPromise = await pl.save().then().catch((error) => {
-     
    })
    const savedPlayer = savedPlayerPromise
     savedPlayers.push(savedPlayer)
-    // savedPlayer = savedPlayerPromise
-    // savedPlayers.push(savedPlayer)
   }
   return savedPlayers
-  
 }
