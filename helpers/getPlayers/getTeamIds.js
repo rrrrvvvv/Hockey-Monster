@@ -57,10 +57,11 @@ exports.getStats = async function getStats(players) {
  })
   return playerStats
 }
+
 exports.writePlayers = async function(sentPlayers) {
   let savedPlayers = []
   for (pl of sentPlayers) {
-   const savedPlayerPromise = await pl.save().then().catch((error) => {
+   const savedPlayerPromise = await pl.save().catch((error) => {
    })
    const savedPlayer = savedPlayerPromise
     savedPlayers.push(savedPlayer)

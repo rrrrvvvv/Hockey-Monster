@@ -76,7 +76,7 @@ exports.responseFilter = function responseFilter(data, location) {
                     case 'timeOnIcePerGame':
                         let minutes = statsValues[index].split(":")
                         if (parseInt(minutes[0]) < 10) {
-                            console.log(minutes)
+                          //  console.log(minutes)
                             filteredStats = null
                             //  return null
                         }

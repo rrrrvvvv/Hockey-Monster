@@ -25,15 +25,15 @@ exports.getPlayers = (req, res, next) => {
              const statsPromise = await getTeamIds.getStats(rosters)
              const playerStats = statsPromise
             //writes player objects to database
-            const writePromise = await getTeamIds.writePlayers(playerStats)
-            const write = writePromise
+             const writePromise = await getTeamIds.writePlayers(playerStats)
+             const write = writePromise
             // const check = await check(players)
             res.status(200).json({
                 message: 'success',
               //  teamIds: teamIds,
              //   roster: rosters,
-              //  stats: playerStats,
-             // written: write
+                stats: playerStats,
+              written: write
             })
         } catch (error) {
             next(error)
@@ -55,14 +55,15 @@ exports.getRanks = (req,res,next) => {
         const getPlayersFromDB = getPlayersPromise
          const normalizedPlayersPromise = await getRanks.normalizePlayers(getPlayersFromDB)
          const normalizedPlayers = normalizedPlayersPromise
-        //  const weightedCategories = getRanks.weightCategories(normalizedPlayers)
-        
+         const weightedCategoriesPromise = await getRanks.weightCategories(normalizedPlayers)
+        const weightedPlayers = weightedCategoriesPromise
 
         console.log('ingetRanks')
         res.status(201).json({
             message: 'ingetranks',
-            players: getPlayersFromDB,
-            normalized: normalizedPlayers
+           // players: getPlayersFromDB,
+           // normalized: normalizedPlayers,
+            weighted: weightedPlayers
         })
 
     } catch (error) {
