@@ -68,11 +68,9 @@ exports.normalizePlayers = async function normalizePlayers(rawPlayers) {
 }
 
 exports.weightCategories = function weightCategories(rawPlayers) {
-    //console.log('inweightCategories')
     const schema = Object.keys(Player.schema.paths)
     let sums = []
     for (let cat of schema) {
-        //  console.log(cat)
         switch (cat) {
             case 'name':
             case 'NHLId':
@@ -89,21 +87,13 @@ exports.weightCategories = function weightCategories(rawPlayers) {
             default:
                 let categorySum = {}
                 categorySum[cat] = rawPlayers.reduce((acc, cur, index, array) => {
-                    // console.log(acc)
-                    // console.log(cur[cat])
                     return acc + cur[cat]
                 }, 0)
-                //sum[cat] = 4
-                // console.log(categorySum)
                 sums.push(categorySum)
         }
     }
-    // let weights = []
     let totalSum = sums.reduce((acc, curr, index, array) => {
-        // console.log(Object.values(curr)[0])
-        // weights.push(curr)
         return acc + Object.values(curr)[0] / 8
-        // return (Object.values(a)[0] + Object.values(b)[0])
     }, 0)
     let weights = sums.map((val, index, array) => {
         let temp = {}
@@ -121,10 +111,7 @@ exports.weightCategories = function weightCategories(rawPlayers) {
         newPlayer.save().then().catch((error) => {
             console.log(error.stack)
         })
-
         return newPlayer
     })
-  //  console.log(sums, totalSum, weights)
-   // let weightedPlayers = rawPlayers
     return weightedPlayers
 }

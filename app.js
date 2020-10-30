@@ -4,7 +4,9 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const path = require('path')
 const scriptRoutes = require('./routes/scripts')
+const homePageRoutes = require('./routes/homepage')
 const populatePlayersRoutes = require('./routes/populateplayers')
+const getRanksRoutes = require('./routes/getranks')
 
 mongoose.connect('mongodb+srv://Geoff:E7VX4v6VZ2MBvBA@cluster0.nq3nb.mongodb.net/Cluster0?retryWrites=true&w=majority')
     .then(() => {
@@ -23,9 +25,12 @@ app.use((req, res, next) => {
 })
 
 app.use(bodyParser.json())
+// app.use(express.static('scripts'))
 app.set('views', './views')
 app.set('view engine', 'ejs')
 app.use('/populateplayers', populatePlayersRoutes)
 app.use('/scripts', scriptRoutes)
+app.use('/', homePageRoutes)
+app.use('/getranks', getRanksRoutes)
 
 module.exports = app
