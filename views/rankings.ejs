@@ -8,8 +8,10 @@
 	<!--	<script src="/node_modules/@mysql/xdevapi/lib/index.js"> </script> -->
 	<!-- <link rel="stylesheet" type="text/css" href="css\style.css"> -->
 	<!-- <link href = "../scripts/homepage.js" type="text/javascript"> -->
-	<!-- <script src="homepage.js" type="text/javascript" charset="utf-8">
-	</script> -->
+	<script src="getranks.js" type="text/javascript" charset="utf-8">
+	</script>
+	<script src="https://d3js.org/d3.v5.js"></script>
+	<!-- <script src="ejs.js"></script> -->
 
 
 </head>
@@ -19,9 +21,23 @@
 	<label for="url">Enter an https:// URL:</label>
 
 	<input type="url" name="url" id="url" placeholder="https://example.com" pattern="https://.*" size="30" required>
-	<button type="button" id="get-results-page">rankings page</button>
+	<button type="button" id="sort">rankings page</button>
+	<!-- <script src="getranks.js" type="text/javascript" charset="utf-8">
+	</script> -->
 
-	<div id="my-money-button"></div>
+	<!-- <div id="my-money-button"></div> -->
+	
+	<div id="D3-wrapper">
+		
+
+
+
+		
+		<!-- Put the D3 code in these braces and access data directly, or rather, put it in a function. But then, how to access the data returned from the server if not sent with the view -->
+<!-- Use an include, include the file ain getranks.js and use it's output directly -->
+		<!-- The getranks.js code starts building the graph here. -->
+
+	</div>
 </body>
 
 <!-- <script src="homepage.js" type="text/javascript" charset="utf-8">
