@@ -20,20 +20,37 @@ const chart = function (data1) {
 
     const data = data1.slice(0, 11)
 
-    let stack = d3.stack()
+    let series = d3.stack()
         .keys(["goals", "assists"])
         (data)
-        
-    console.log(stack)
+        .map(d => (d.forEach(v => v.key = d.key), d))
+
+    const max = d3.max(series, d => d3.max(d, d => d[1]))
+
+    console.log(max)
 
 
     x = d3.scaleBand()
-        .domain(d3.range(data.length))
+        .domain(data.map(d => d.name))
+        // .domain(d3.range(data.length))
         .range([margin.left, width - margin.right])
 
     y = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.goals)]).nice()
+        .domain([0, max]).nice()
         .range([height - margin.bottom, margin.top])
+
+    colour = d3.scaleOrdinal()
+        // .domain(series.map(d => d.key))
+        .domain(series.map(d => d.key))
+        .range(["#deebf7", "#9ecae1"])
+    // .unknown("#ccc")
+    // console.log(d3.schemeBlues[series.length])
+
+    // ["#deebf7","#9ecae1","#3182bd"]
+    console.log(d3.schemeBlues)
+
+
+    console.log(d3.max(series, f => d3.max(f, f => f[1])))
 
     const svg = d3.create("svg")
         .attr("width", width)
@@ -42,33 +59,73 @@ const chart = function (data1) {
         .attr("font-size", "40")
         .attr("text-anchor", "middle")
 
-    const bar = svg.selectAll("g")
-        .data(data)
+    let cat = svg
+        .selectAll("g")
+        .data(series)
         .join("g")
-        .attr("transform", (d, i) => `translate(${x(i)},0)`)
 
-    bar.append("rect")
-        .attr("fill", "steelblue")
-        .attr("x", d => x(d.name))
-        .attr("y", d => y(d.goals))
+    let bar = cat.selectAll("rect")
+        .data(d => d)
+        .join("rect")
+        .attr("fill", d => colour(d.key))
+        .attr("x", (d, i) => x(d.data.name))
+        .attr("y", d => y(d[1]))
         .attr("width", x.bandwidth())
-        .attr("height", d => y(0) - y(d.goals))
-
-    bar.append("text")
-        .attr("fill", "black")
-        .attr("y", d => y(d.goals) + 10)
-        .attr("x", x.bandwidth() / 2)
-        .attr("alignment-baseline", "hanging")
+        .attr("height", d => y(d[0]) - y(d[1]))
 
     svg.append("g")
         .attr("transform", `translate(${margin.left},0)`)
         .call(d3.axisLeft(y))
 
     function update(stat) {
+        let newBar
         switch (stat) {
             case "goals":
-                bar.sort((a, b) => d3.descending(a.goals, b.goals))
-                    .attr("transform", (d, i) => `translate(${x(i)},0)`)
+                console.log(bar)
+                //   bar.sort((a, b) => d3.descending(a.goals, b.goals))
+                newBar = bar.sort((a, b) => d3.descending(a.data.goals, b.data.goals))
+                x.domain(newBar.data().map(d => d.data.name))
+                bar.attr("x", (d, i) => x(d.data.name))
+                // console.log(newBar.data()[1].data.name)
+                break
+            case "assists":
+                series = d3.stack()
+                    .keys(["assists", "goals"])
+                    (data)
+                    .map(d => (d.forEach(v => v.key = d.key), d))
+
+                console.log(series)
+
+                cat = svg
+                    .selectAll("g")
+                    .data(series)
+                    .join("g")
+
+                bar = cat.selectAll("rect")
+                    .data(d => d)
+                    .join("rect")
+
+                console.log(bar.data())
+
+                newBar = bar.sort((a, b) => d3.descending(a.data.assists, b.data.assists))
+
+                console.log(newBar)
+                x.domain(newBar.data().map(d => d.data.name))
+                bar.attr("x", (d, i) => x(d.data.name))
+                    .attr("y", (d, i) => y(d[1]))
+                    .attr("height", d => y(d[0]) - y(d[1]))
+                    .attr("fill", d => colour(d.key))
+
+                svg.append("g")
+                    .attr("transform", `translate(${margin.left},0)`)
+                    .call(d3.axisLeft(y))
+
+                // series = d3.stack()
+                //     .keys(["assists", "goals"])
+                //     (data)
+                //     .map(d => (d.forEach(v => v.key = d.key), d))
+                // .attr("y", d => y(d[1])-y(max))
+
                 break
             default:
                 break
@@ -99,7 +156,7 @@ function insert(data) {
 }
 
 function sort() {
-    chartElement.update("goals")
+    chartElement.update("assists")
 }
 
 getData(insert)
