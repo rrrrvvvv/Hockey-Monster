@@ -21,7 +21,12 @@
 	<label for="url">Enter an https:// URL:</label>
 
 	<input type="url" name="url" id="url" placeholder="https://example.com" pattern="https://.*" size="30" required>
-	<button type="button" id="sort">rankings page</button>
+	<select name="category" id="sort">
+		<option value="">--Select a Stat--</option>
+		<option value="goals">Goals</option>
+		<option value="assists">Assists</option>
+	</select>
+		
 	<!-- <script src="getranks.js" type="text/javascript" charset="utf-8">
 	</script> -->
 

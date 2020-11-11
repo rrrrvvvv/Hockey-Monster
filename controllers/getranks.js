@@ -53,7 +53,7 @@ exports.rankings = (req, res, next) => {
  exports.data = async (req,res,next) => {
      console.log('hello from data')
      try{
-         const dataPromise = await Player.find({},['name','goals'])
+         const dataPromise = await Player.find({},['name','goals','assists'])
          const data = dataPromise
         // res.status(201).json(JSON.stringify(data))
         res.status(201).json(data)
