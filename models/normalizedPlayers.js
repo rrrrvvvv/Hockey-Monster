@@ -24,7 +24,8 @@ const normalizedPlayerSchema = mongoose.Schema({
     games: Number,
     atoi: Number,
     normalized: Boolean,
-    weighted: Boolean
+    weighted: Boolean,
+    score: Number
 
 })
 

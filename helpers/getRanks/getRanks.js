@@ -46,21 +46,24 @@ exports.getPlayersFromDB = async function getPlayersFromDB() {
 
 exports.normalizePlayers = async function normalizePlayers(rawPlayers) {
     console.log('innormalizeplayers')
-
     try {
-        //  console.log(rawPlayers.max)
-        const normalizedPlayers = rawPlayers.players.map((value, index, array) => {
+        // let score 
+        const normalizedPlayers = await Promise.all(rawPlayers.players.map(async (value, index, array) => {
+            let score = 0
             for (cat in rawPlayers.max) {
                 value[cat] /= rawPlayers.max[cat]
+                score += value[cat]
             }
             const playerObject = value.toObject()
             playerObject._id = undefined
-            const newPlayer = new NormalizedPlayer(playerObject)
-            newPlayer.save().then().catch((error) => {
+            const newPlayerNorm = new NormalizedPlayer(playerObject)
+            newPlayerNorm.score = score
+            await newPlayerNorm.save().then().catch((error) => {
                 //  console.log(error.stack)
             })
-            return newPlayer
-        })
+            return newPlayerNorm
+        }))
+        // console.log(normalizedPlayers)
         return normalizedPlayers
     } catch (error) {
         return error.stack
@@ -68,6 +71,7 @@ exports.normalizePlayers = async function normalizePlayers(rawPlayers) {
 }
 
 exports.weightCategories = function weightCategories(rawPlayers) {
+    // console.log(rawPlayers)
     const schema = Object.keys(Player.schema.paths)
     let sums = []
     for (let cat of schema) {
@@ -83,6 +87,7 @@ exports.weightCategories = function weightCategories(rawPlayers) {
             case 'weighted':
             case '_id':
             case '__v':
+            case 'score':
                 break
             default:
                 let categorySum = {}
@@ -92,26 +97,35 @@ exports.weightCategories = function weightCategories(rawPlayers) {
                 sums.push(categorySum)
         }
     }
+
     let totalSum = sums.reduce((acc, curr, index, array) => {
         return acc + Object.values(curr)[0] / 8
     }, 0)
+
     let weights = sums.map((val, index, array) => {
         let temp = {}
         temp[Object.keys(val)[0]] = totalSum / Object.values(val)[0]
         return temp
     })
+
    const weightedPlayers = rawPlayers.map((val,index,array) => {
+    let score = 0
         weights.map((value,i,arr) => {
             val[Object.keys(value)[0]] *= Object.values(value)[0]
+            //  console.log(val[Object.keys(value)[0]])
+            score += val[Object.keys(value)[0]]
             return val
         })
+        // console.log(val)
         let playerObject = val.toObject()
         playerObject._id = undefined
         const newPlayer = new WeightedPlayer(playerObject)
+        newPlayer.score = score
         newPlayer.save().then().catch((error) => {
             console.log(error.stack)
         })
         return newPlayer
     })
+
     return weightedPlayers
 }

@@ -7,21 +7,6 @@ window.onload = function () {
 let chartElement
 let categories = ['goals', 'assists', 'points', 'pims', 'ppp', 'sog', 'hits', 'blks']
 
-// function buildSeries(data, categories) {
-//     let series = d3.stack()
-//         .keys(categories)
-//         (data)
-//         .map(d => (d.forEach(v => v.key = d.key), d))
-//     return series
-// }
-
-// function buildCategories(stat) {
-//     let d = categories.sort((a, b) => {
-//         return (a === stat) ? -1 : 0
-//     })
-//     return d
-// }
-
 const chart = function (data) {
 
     function buildSeries(data, categories) {
@@ -40,6 +25,7 @@ const chart = function (data) {
     }
 
     function buildElements(series) {
+
         cat = svg
             .selectAll("g")
             .data(series)
@@ -48,26 +34,35 @@ const chart = function (data) {
         bar = cat.selectAll("rect")
             .data(d => d)
             .join("rect")
+
         return bar
     }
 
     function sortBars(bars, stat) {
         switch (stat) {
             case "score":
-                let scoreKey = categories[categories.length - 1]
-                console.log(scoreKey)
-                sortedBar = bars.sort((a, b) => d3.descending(a.data[scoreKey], b.data[scoreKey]))
+                sortedBar = bars.sort((a, b) => d3.descending(a.data[stat], b.data[stat]))
+                // let scoreKey = categories[categories.length - 1]
+                // categories = buildCategories(scoreKey)
+                // buildSeries(data,categories)
+                // console.log(scoreKey)
+                // // console.log(bars.data())
+                // // sortedBar = bars.sort((a, b) => d3.descending(a.data[scoreKey], b.data[scoreKey]))
+                // // sortedBar = bars.sort((a, b) => d3.descending(a[1], b[1]))
+                console.log(sortedBar.data())
+                // // x.domain(sortedBar.data().map(d => d.data.name))
+                // // sortedBar.order()
                 break
             default:
                 sortedBar = bars.sort((a, b) => d3.descending(a.data[stat], b.data[stat]))
                 break
         }
-        // sortedBar = bars.sort((a, b) => d3.descending(a.data[stat], b.data[stat]))
         return sortedBar
     }
 
     function positionElements(bars) {
         x.domain(bars.data().map(d => d.data.name))
+
         bars.attr("x", (d, i) => x(d.data.name))
             .attr("y", (d, i) => y(d[1]))
             .attr("height", d => y(d[0]) - y(d[1]))
@@ -119,6 +114,21 @@ const chart = function (data) {
     function update(stat) {
         switch (stat) {
             case "score":
+                // categories = buildCategories(stat)
+                // series = buildSeries(data, categories)
+                // let scoreKey = categories[categories.length - 1]
+                // categories = buildCategories(scoreKey)
+                // series = buildSeries(data, categories)
+                // console.log(series)
+                // bars = buildElements(series)
+                // sortedBar = sortBars(bars, stat)
+                // positionElements(sortedBar)
+                // categories = buildCategories(stat)
+                // series = buildSeries(data, categories)
+                bars = buildElements(series)
+                sortedBar = sortBars(bars, stat)
+                positionElements(sortedBar)
+
                 break
             default:
                 categories = buildCategories(stat)
@@ -154,8 +164,6 @@ function insert(data) {
 }
 
 function sort(event) {
-    // console.log(event.target.value)
-    // let key = event.target.value
     chartElement.update(event.target.value)
 }
 

@@ -55,14 +55,17 @@ exports.getRanks = (req,res,next) => {
         const getPlayersFromDB = getPlayersPromise
          const normalizedPlayersPromise = await getRanks.normalizePlayers(getPlayersFromDB)
          const normalizedPlayers = normalizedPlayersPromise
+        //  console.log(normalizedPlayers)
          const weightedCategoriesPromise = await getRanks.weightCategories(normalizedPlayers)
+        //  console.log(normalizedPlayers)
         const weightedPlayers = weightedCategoriesPromise
+        // console.log(normalizedPlayers)
 
-        console.log('ingetRanks')
+        console.log('in get Ranks!!!!!!!')
         res.status(201).json({
             message: 'ingetranks',
            // players: getPlayersFromDB,
-           // normalized: normalizedPlayers,
+            normalized: normalizedPlayers,
             weighted: weightedPlayers
         })
 
