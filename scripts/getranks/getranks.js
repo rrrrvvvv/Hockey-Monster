@@ -60,17 +60,12 @@ const chart = function (data) {
             .attr("height", d => y(d[0]) - y(d[1]))
             .attr("width", x.bandwidth())
             .attr("fill", d => colour(d.key))
-        // .attr("transform", `translate(${margin.left},0)`)
+            .classed("stat-bar", true)
 
         svg.append("g")
             .attr("transform", `translate(${margin.left},0)`)
             .call(d3.axisLeft(y))
     }
-
-    // function getBars() {
-    //     bar = cat.selectAll("rect")
-    //     return bar
-    // }
 
     const width = 1100,
         height = 400
@@ -123,7 +118,6 @@ const chart = function (data) {
                 bars = buildElements(series)
                 sortedBar = sortBars(bars, stat)
                 positionElements(sortedBar)
-                // d3.select("#bar-chart-wrapper").selectAll("rect").attr("transform", `translate(${margin.left},0)`)
                 break
         }
         return svg
@@ -160,19 +154,10 @@ function highlight(event) {
     const width = '1100',
         height = '400'
     let players = highlightedPlayers
-    // console.log(players)
-    // console.log(playerData)
+
     let highlightData = playerData.filter((current, i, array) => {
-        // console.log(current.name)
         return players.includes(current.name)
     })
-    // console.log(highlightData)
-
-    // let svg = d3.create("svg")
-    //     .attr("width", width)
-    //     .attr("height", height)
-
-    // console.log(svg.node())
 
     x = d3.scaleBand()
         .domain(highlightData.map(d => d.name))
@@ -187,7 +172,14 @@ function highlight(event) {
     let playerCard = div.selectAll("div")
         .data(highlightData)
         .join("div")
-        // .style("height", height + 'px')
+        // .on("mouseenter", cardHover)
+        // .on("mouseleave", cardReset)
+        // .on("click", [cardHover, cardReset])
+        .on("click", cardClick)
+        // .on("click.cardReset", cardReset)
+        // .on("click", cardReset)
+        // .on("click")
+        .classed("player-card", true)
         .style("flex", "1")
         .style("flex-grow", "0")
         .style("display", "inline-block")
@@ -196,76 +188,223 @@ function highlight(event) {
     playerCard.append("p")
     playerCard.append("ul")
 
+    let barIndex = []
+    let notMoved = []
+    let svgWidth
+
+    function moveFilter(d, i) {
+        // console.log(barIndex)
+
+        if (i < 659) {
+            if (i > barIndex[0]) {
+                return true
+            } else {
+                notMoved.push(i)
+                return false
+            }
+        } else if (i < 1318) {
+            if (i > barIndex[1]) {
+                return true
+            } else {
+                notMoved.push(i)
+                return false
+            }
+        } else if (i < 1977) {
+            if (i > barIndex[2]) {
+                return true
+            } else {
+                notMoved.push(i)
+                return false
+            }
+        } else if (i < 2636) {
+            if (i > barIndex[3]) {
+                return true
+            } else {
+                notMoved.push(i)
+                return false
+            }
+        } else if (i < 3295) {
+            if (i > barIndex[4]) {
+                return true
+            } else {
+                notMoved.push(i)
+                return false
+            }
+        } else if (i < 3954) {
+            if (i > barIndex[5]) {
+                return true
+            } else {
+                notMoved.push(i)
+                return false
+            }
+        } else if (i < 4613) {
+            if (i > barIndex[6]) {
+                return true
+            } else {
+                notMoved.push(i)
+                return false
+            }
+        } else if (i < 5272) {
+            if (i > barIndex[7]) {
+                return true
+            } else {
+                notMoved.push(i)
+                return false
+            }
+        } else {
+            notMoved.push(i)
+            return false
+        }
+
+    }
+
+    function cardClick(event, data) {
+        console.log(d3.select(this).classed("selected"))
+        // console.log("card hover")
+        // barIndex = []
+        // let svgWidth
+
+
+        if (d3.select(this).classed("selected")) {
+            // cardReset(event,data)
+            d3.select(this).classed("selected", false)
+            d3.select(this).style("border", "none")
+
+            d3.selectAll(".highlighted").attr("width", x.bandwidth()).classed("highlighted", false)
+            console.log(barIndex)
+            d3.selectAll(".stat-bar").filter(moveFilter).attr("transform", `translate(0,0)`)
+            svgWidth = parseInt(d3.select("svg").attr("width"))
+            console.log(svgWidth)
+            svgWidth -= 20
+            d3.select("svg").attr("width", svgWidth)
+            barIndex = []
+            
+        } else {
+            d3.select(this).classed("selected", true)
+            d3.select(this).style("border", "3px solid black")
+            d3.selectAll(".stat-bar").filter(playerFilter).attr("width", "20px").classed("highlighted", true)
+            svgWidth = parseInt(d3.select("svg").attr("width"))
+            console.log(svgWidth)
+            svgWidth += 20
+            d3.select("svg").attr("width", svgWidth)
+            console.log(d3.select("svg").attr("width"))
+            console.log(barIndex)
+            let numberSelected = d3.selectAll(".selected").size()
+            console.log(numberSelected)
+            d3.selectAll(".stat-bar").filter(moveFilter).attr("transform", `translate(${numberSelected*19},0)`)
+            
+            barIndex = []
+        }
+
+        // function cardReset(event, data) {
+        //     console.log(d3.select(this).classed("selected"))
+
+        //     console.log("card Reset")
+
+        //     // if(d3.select(this).classed("selected")) {
+        //     //     // cardReset(event,data)
+        //     //     d3.select(this).classed("selected", false)
+        //     //     // return
+        //     // } else {
+        //     //     return
+        //     //     d3.select(this).classed("selected", true)
+        //     // }
+
+        //     d3.select(this).style("border", "none")
+
+        //     d3.selectAll(".highlighted").attr("width", x.bandwidth()).classed("highlighted", false)
+        //     d3.selectAll(".stat-bar").filter(moveFilter).attr("transform", `translate(0,0)`)
+        //     let svgWidth = d3.select("svg").attr("width")
+        //     console.log(svgWidth)
+        //     svgWidth -= 20
+        //     d3.select("svg").attr("width", svgWidth)
+        //     barIndex = []
+        // }
+
+        // barIndex = []
+
+        function playerFilter(d, i) {
+
+            if (d.data.name === data.name) {
+                barIndex.push(i)
+                // console.log(barIndex)
+            }
+
+            return d.data.name === data.name
+        }
+
+        // function cardReset(event, data) {
+
+        //     console.log(event)
+
+        //     d3.select(".selected").style("border", "none")
+
+        //     d3.selectAll(".highlighted").attr("width", x.bandwidth()).classed("highlighted", false)
+        //     d3.selectAll(".stat-bar").filter(moveFilter).attr("transform", `translate(0,0)`)
+        //     let svgWidth = d3.select("svg").attr("width")
+        //     console.log(svgWidth)
+        //     svgWidth -= 20
+        //     d3.select("svg").attr("width", svgWidth)
+        //     barIndex = []    
+        // }
+
+
+        // d3.select(this).style("border", "3px solid black")
+        // d3.selectAll(".stat-bar").filter(playerFilter).attr("width", "20px").classed("highlighted", true)
+        // let svgWidth = d3.select("svg").attr("width")
+        // svgWidth += 20
+        // d3.select("svg").attr("width", svgWidth)
+        // d3.selectAll(".stat-bar").filter(moveFilter).attr("transform", `translate(19,0)`)
+    }
+
+    // function cardReset(event, data) {
+    //     console.log(d3.select(this).classed("selected"))
+
+    //     console.log("card Reset")
+
+    //     if (d3.select(this).classed("selected")) {
+    //         // cardReset(event,data)
+    //         d3.select(this).classed("selected", false)
+    //         // return
+    //     } else {
+    //         return
+    //         d3.select(this).classed("selected", true)
+    //     }
+
+    //     d3.select(this).style("border", "none")
+
+    //     d3.selectAll(".highlighted").attr("width", x.bandwidth()).classed("highlighted", false)
+    //     d3.selectAll(".stat-bar").filter(moveFilter).attr("transform", `translate(0,0)`)
+    //     let svgWidth = d3.select("svg").attr("width")
+    //     console.log(svgWidth)
+    //     svgWidth -= 20
+    //     d3.select("svg").attr("width", svgWidth)
+    //     barIndex = []
+    // }
+
     function seriesCreator(data, i, name) {
-
-        let names = data.map((d, i, arr) => {
-            return d.name
-        })
-
         let array = []
 
-        // console.log(name)
-        // console.log(names)
-
-        for (cat in data[i]) {
-            // console.log(cat)
+        for (cat in data) {
             switch (cat) {
                 case "name":
                 case "_id":
                     break
                 default:
                     let stat = new Object()
-                    stat[cat] = data[i][cat]
+                    stat[cat] = data[cat]
                     array.push(stat)
                     break
             }
-            // array.push(data[i][cat])
         }
-        console.log(array)
-        // let newArray = array.map((cur,i,arr) => {
-        //     return Math.round(cur.value * 1000) / 1000
-        // })
-
-        // console.log(array)
-
-        // let series = d3.stack().keys(categories)(data)
-
-        // console.log(i)
-        // console.log(series)
-        // console.log(data)
-
-
-        // let result = data.map((cur,i,arr) => {
-        //     return cur[categories[i]]
-        // })
-
-        // let groups = Array.from(d3.group(data, d=>d.name))
-        // 
-        // console.log(groups)
-
-        // console.log(result)
-
-        // let mapped = series.map()
-
-        // console.log(mapped)
-
         return array
     }
 
     function textCreator(data, index) {
-        // console.log(data.key)
-        // console.log(index)
-        // data[index].data
-
-        // let key = data.key
-        // let value = data[index].data[data.key]
-        // value = Math.round(value * 1000) / 1000
-        // console.log(data[index].data[data.key])
-        // console.log(data)
-        // console.log(index)
-        // return key + ": " + value
         return Object.keys(data) + ": " + Math.round(Object.values(data) * 1000) / 1000
     }
+
+    // Should make this a chart method, call it on button press. No need to have a global variable. Work from the same processed data
 
     div.selectAll("p")
         .text(d => d.name)
@@ -273,7 +412,7 @@ function highlight(event) {
         .style("text-align", "center")
     div.selectAll("ul")
         .selectAll("li")
-        .data((d, i) => seriesCreator(highlightData, i, d.name))
+        .data((d, i) => seriesCreator(d, i, d.name))
         .join("li")
         .text((d, i) => textCreator(d, i))
         .style("display", "block")
