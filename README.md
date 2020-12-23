@@ -7,3 +7,4 @@ Player database is populated by making calls to the NHL API, and then analysis i
 This data is then served up as a chart, using D3.
 
 The goal is to, for a micropayment using moneybutton, allow users to have their specific team analyzed and the scoring algorithm adpated to their specific league settings. 
+
