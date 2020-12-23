@@ -5,15 +5,170 @@ window.onload = function () {
     sortButton.addEventListener("change", sort)
     const playersButton = document.getElementById('highlight-team')
     playersButton.addEventListener('click', highlight)
-    // return sortButton
+    const webTeamForm = document.getElementById('web-team')
+    webTeamForm.addEventListener('click', importTeam)
+    // checkCode()
+    // const webTeamForm = document.getElementById('web-team-form')
+    // webTeamForm
 }
 let chartElement
 let categories = ['goals', 'assists', 'points', 'pims', 'ppp', 'sog', 'hits', 'blks']
 let highlightedPlayers = ['Ryan Strome', 'Blake Wheeler', 'Anders Lee', 'Kevin Fiala', 'Kyle Palmieri', 'Ryan Reaves', 'Brayden Point', 'Filip Forsberg',
     'Jordan Eberle', "Ryan Ellis", 'Kris Letang', 'Neal Pionk', 'Matt Niskanen', 'Taylor Hall', 'David Perron', 'David Pastrnak',
-    'Torey Krug', 'Brock Boeser', 'Steven Stamkos', 'Kailer Yamamoto']
+    'Torey Krug', 'Brock Boeser', 'Steven Stamkos', 'Kailer Yamamoto'
+]
 
 let playerData
+checkCode()
+
+//check if authorized login
+async function checkCode() {
+
+    try{
+    console.log(window.location.search)
+    let url = window.location.search
+    let urlParams = new URLSearchParams(url)
+    if (urlParams.get("code")) {
+        let code = {
+            code: urlParams.get("code")
+        }
+        let tokenPromise = await getAccessToken(code)
+        let token = tokenPromise
+        console.log(token)
+        console.log(code)
+    } else {
+
+    }
+} catch (error) {
+    console.log(error)
+}
+}
+// checkCode()
+// let code = urlParams.get("code")
+
+function getAccessToken(code) {
+    console.log(code)
+    return new Promise((resolve, reject) => {
+        let request = new XMLHttpRequest()
+        request.open('POST', "../getteam/getaccesstoken")
+        request.onreadystatechange = () => {
+            if (request.readyState === 4) {
+                if (request.status === 201) {
+                    resolve(JSON.parse(request.response))
+                } else {
+                    reject(JSON.parse(request.response))
+                }
+            }
+            // request.send(JSON.stringify(code))
+            // request.setRequestHeader('Content-Type', 'application/json')
+            // request.send()
+        }
+        request.setRequestHeader('Content-Type', 'application/json')
+        request.send(JSON.stringify(code))
+    })
+}
+
+async function importTeam(event) {
+    event.preventDefault()
+    let url = document.getElementById('url').value
+    console.log(url)
+    let data = {
+        url: url
+    }
+    // console.log(data)
+    let destinationPromise = await submitWebTeam(data)
+    let destination = destinationPromise
+    //    console.log(destination.url)
+    window.location.replace(destination.url)
+    return false
+}
+
+function getTeamRequest(data) {
+    return new Promise((resolve, reject) => {
+        let request = new XMLHttpRequest()
+        request.open('POST', '../getteam')
+        request.onreadystatechange = () => {
+            if (request.readyState === 4) {
+                if (request.status === 201) {
+                    resolve(JSON.parse(request.response))
+                } else {
+                    reject(JSON.parse(request.response))
+                }
+            }
+        }
+        request.setRequestHeader('Content-Type', 'application/json')
+        console.log(JSON.stringify(data))
+        // console.log(request.body)
+        request.send()
+        console.log(request.body)
+    })
+}
+
+async function submitWebTeam(url) {
+    try {
+        const requestPromise = getTeamRequest(url)
+        const response = await requestPromise
+        console.log(response)
+        return response
+
+        // console.log(JSON.parse(response.body))
+
+    } catch (errorResponse) {
+        console.log(errorResponse.error)
+    }
+
+}
+
+//Oauth stuff
+// let OAuth ={
+//     client_id: 'dj0yJmk9U1dBdmZHT3JzN3hCJmQ9WVdrOU1VSm1XbEZIVWpFbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWYx',
+//     redirect_uri: "https://0113086a6e33.ngrok.io/getranks/rankings",
+//     response_type: "code"
+// }
+// function getAuthURL() {
+//     // let url = 'https://api.login.yahoo.com/oauth2/request_auth?client_id=' + client_id + '--&redirect_uri=oob&response_type=code&language=en-us'
+//     let url = 'https://api.login.yahoo.com/oauth2/request_auth'
+//     return new Promise((resolve,reject) => {
+//         let request = new XMLHttpRequest()
+//         request.open('')
+//     })
+
+
+// }
+
+
+
+
+
+
+// console.log(event)
+// let formData = new FormData()
+// let formElements = {"url": document.forms["web-team-form"].elements["url"].value}
+// formData.append("url", document.forms["web-team-form"].elements["url"].value)
+// // formData.append("test", "test")
+// console.log(JSON.stringify(formElements))
+// console.log(formData)
+// // console.log(form)
+// const teamCall = new XMLHttpRequest()
+// teamCall.onreadystatechange = () => {
+//     if (teamCall.readyState === 4) {
+//         // insert(JSON.parse(dataCall.response))
+//         webTeam = JSON.parse(teamCall.response)
+//     }
+// }
+// teamCall.open('POST', '../getteam')
+// teamCall.send(JSON.stringify(formElements))
+// teamCall.send(formElements)
+// const webTeamForm = document.getElementById('web-team-form')
+// console.log(webTeamForm)
+// event.preventDefault()
+// const webTeamForm = document.getElementById('web-team-form')
+// // webTeamForm.preventDefault()
+// webTeamForm.submit()
+// console.log(event)
+// return false
+// event.preventDefault()
+// }
 
 const chart = function (data) {
 
@@ -51,7 +206,14 @@ const chart = function (data) {
     }
 
     function sortBars(bars, stat) {
-        sortedBar = bars.sort((a, b) => d3.descending(a.data[stat], b.data[stat]))
+        // sortedBar = bars.sort((a, b) => d3.descending(a.data[stat], b.data[stat]))
+        sortedBar = bars.sort((a, b) => {
+            if (a.data[stat] === b.data[stat]) {
+                return a.data.name.localeCompare(b.data.name)
+            } else {
+                return b.data[stat] - a.data[stat]
+            }
+        })
         return sortedBar
     }
 
@@ -104,6 +266,38 @@ const chart = function (data) {
         .domain(series.map(d => d.key))
         .range(d3.schemeSpectral[series.length])
 
+    function buildKey() {
+
+        let categoriesCaps = ['Goals', 'Assists', 'Points', 'Pims', 'Ppp', 'Sog', 'Hits', 'Blks']
+
+        let key = d3.select("#key")
+            .style("display", "flex")
+            .style("justify-content", "center")
+            .style("align-items", "center")
+            .text("Color Code:")
+            // .style("")
+            // .style("border", "1px solid black")
+            // .style("width", "50%")
+            .style("margin", "auto")
+            .style("margin-top", "1rem")
+            .style("margin-bottom", "1rem")
+            .style("font-weight", "600")
+        // .style("display", "flex")
+
+        key.selectAll("div")
+            .data(categoriesCaps)
+            .join("div")
+            .text(d => d)
+            .style("width", "10%")
+            // .style("margin", "auto")
+            .style("padding", "0.2rem 0.2rem")
+            .style("text-align", "center")
+            .style("background-color", d => colour(d))
+        // console.log(key.nodes())
+    }
+
+    buildKey()
+
     const svg = d3.create("svg")
         .attr("width", width)
         .attr("height", height)
@@ -127,18 +321,23 @@ const chart = function (data) {
         switch (stat) {
             case "score":
                 updatedBars = buildElements(series)
-                
+
                 sortedBar = sortBars(updatedBars, stat)
                 // console.log(playerData)
                 // let sortedPlayerScore = playerData.map((x) => {
                 //     return x
                 // })
-                playerData.sort((a,b) => {
-                    return b.score - a.score
+                playerData.sort((a, b) => {
+                    if (b.score === a.score) {
+                        return a.name.localeCompare(b.name)
+                    } else {
+                        return b.score - a.score
+                    }
+                    // return b.score - a.score
                 })
                 // console.log(playerData)
-                
-                // console.log(playerData)
+                console.log("player data after sort")
+                console.log(playerData)
                 // let updatedPlayerData
                 positionElements(sortedBar)
                 break
@@ -151,10 +350,21 @@ const chart = function (data) {
                 // let sortedPlayerStat = playerData.map((x) => {
                 //     return x
                 // })
-                playerData.sort((a,b) => {
-                    return b[stat] - a[stat]
+                playerData.sort((a, b) => {
+                    if (b[stat] === a[stat]) {
+                        // let nameA = a.name
+                        // let nameB = b.name
+                        // console.log(b.name)
+                        // console.log(a.name)
+                        // console.log(a.name.localeCompare(b.name))
+                        return a.name.localeCompare(b.name)
+                    } else {
+                        return b[stat] - a[stat]
+                    }
+                    // return b[stat] - a[stat]
                 })
-                // console.log(playerData)
+                console.log("player data after sort")
+                console.log(playerData)
                 positionElements(sortedBar)
                 break
         }
@@ -204,7 +414,12 @@ const chart = function (data) {
                 // console.log(elem.name)
                 return elem.name === data.name
             })
-            let toMove = playerData.slice(index+1)
+            console.log(index)
+            let toMove = playerData.slice(index + 1)
+            console.log("player data after to move")
+            console.log(playerData)
+            console.log("player data to move")
+            console.log(toMove)
             let namesToMove = toMove.map((e) => {
                 return e.name
             })
@@ -213,15 +428,15 @@ const chart = function (data) {
             // console.log(index)
             if (d3.select(this).classed("selected")) {
                 // console.log(sortButton.value)
-                
+
                 d3.select(this).classed("selected", false)
                 d3.select(this).style("border", "none")
                 // d3.selectAll(".highlighted").attr("width", x.bandwidth()).classed("highlighted", false)
                 d3.selectAll(".stat-bar").filter(playerFilter).attr("width", x.bandwidth()).classed("highlighted", false)
                 // d3.selectAll(".stat-bar").filter(moveFilter).attr("transform", `translate(0,0)`)
-                d3.selectAll(".stat-bar").filter(moveFilter).attr("x", (d,i,n) => 
-                n[i].x.baseVal.value - 19
-            )
+                d3.selectAll(".stat-bar").filter(moveFilter).attr("x", (d, i, n) =>
+                    n[i].x.baseVal.value - 19
+                )
                 // console.log(d3.selectAll(".stat-bar").filter(moveFilter))
                 svgWidth = parseInt(d3.select("svg").attr("width"))
                 svgWidth -= 20
@@ -240,7 +455,7 @@ const chart = function (data) {
                 let numberSelected = d3.selectAll(".selected").size()
                 // console.log(numberSelected)
                 // console.log(toMove)
-                d3.selectAll(".stat-bar").filter(moveFilter).attr("x", (d,i,n) => 
+                d3.selectAll(".stat-bar").filter(moveFilter).attr("x", (d, i, n) =>
                     n[i].x.baseVal.value + 19
                 )
 
@@ -261,10 +476,13 @@ const chart = function (data) {
                 return d.data.name === data.name
             }
 
-            function moveFilter(d,i) {
+            function moveFilter(d, i) {
                 // console.log(d)
-               return namesToMove.includes(d.data.name)
-                
+                if (namesToMove.includes(d.data.name)) {
+                    // console.log(d.data.name)
+                }
+                return namesToMove.includes(d.data.name)
+
                 // let playersToMove = playerData
                 // console.log(sortButton)
             }
@@ -348,7 +566,7 @@ async function insert(data) {
 function sort(event) {
     chartElement.update(event.target.value)
     // console.log("hello from sort")
-    console.log(playerData)
+    // console.log(playerData)
     // let sortedPlayerData = []
     // populate a list of players in order of sorted value
     console.log(event.target.value)
@@ -364,15 +582,15 @@ function highlight(event) {
         document.getElementById('highlight-team').innerHTML = 'Remove Team'
     }
     this.classList.toggle('clicked')
-    
+
     console.log("hello from highlight")
     console.log(this.classList)
     // chartElement.loadPlayers()
 }
 
 function initialize() {
-console.log("hello from initialize")
-// chartElement.update('score')
+    console.log("hello from initialize")
+    // chartElement.update('score')
 }
 
 getData(insert)

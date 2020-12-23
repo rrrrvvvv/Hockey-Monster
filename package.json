@@ -16,6 +16,8 @@
     "jsdom": "^16.4.0",
     "mongoose": "^5.10.13",
     "mongoose-unique-validator": "^2.0.3",
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "openid-client": "^4.2.2",
+    "xmlhttprequest": "^1.8.0"
   }
 }

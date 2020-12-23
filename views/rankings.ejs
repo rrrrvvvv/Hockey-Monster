@@ -20,8 +20,13 @@
 
 	<label for="url">Enter an https:// URL:</label>
 	<button id="highlight-team">Import team</button>
+	<button type="submit" id="web-team" form="web-team-form">Get team from web</button>
 
-	<input type="url" name="url" id="url" placeholder="https://example.com" pattern="https://.*" size="30" required>
+	<form class="web-team-form" id="web-team-form">
+		<input type="url" name="url" id="url" form="web-team-form" placeholder="paste team link here" pattern="https://.*" size="30"
+			required>
+	</form>
+
 	<select name="category" id="sort">
 		<!-- <option value="">--Select a Stat--</option> -->
 		<option value="score">Total Score</option>
@@ -34,14 +39,23 @@
 		<option value="pims">Pims</option>
 		<option value="blks">Blocks</option>
 	</select>
-		
-	
+
+	<div id="key">
+
+	</div>
+
+
 	<div id="bar-chart-wrapper">
 
 	</div>
-	<div id="player-card-wrapper">
+	<iframe id="player-card-iframe" style="display: none">
+	</iframe>
+		<div id="player-card-wrapper">
 
-	</div>
+		</div>
+		
+
+	<!-- </iframe> -->
 </body>
 
 <!-- <script src="homepage.js" type="text/javascript" charset="utf-8">
