@@ -9,7 +9,8 @@ const populatePlayersRoutes = require('./routes/populateplayers')
 const getRanksRoutes = require('./routes/getranks')
 const getTeamRoutes = require('./routes/getteam')
 
-mongoose.connect('mongodb+srv://--/Cluster0?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://Geoff:E7VX4v6VZ2MBvBA@cluster0.nq3nb.mongodb.net/Cluster0?retryWrites=true&w=majority')
+// mongoose.connect('')
     .then(() => {
         console.log('Success connected to MongoDB Atlas')
     })
