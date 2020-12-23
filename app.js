@@ -10,6 +10,7 @@ const getRanksRoutes = require('./routes/getranks')
 const getTeamRoutes = require('./routes/getteam')
 
 mongoose.connect('mongodb+srv://Geoff:E7VX4v6VZ2MBvBA@cluster0.nq3nb.mongodb.net/Cluster0?retryWrites=true&w=majority')
+// mongoose.connect('')
     .then(() => {
         console.log('Success connected to MongoDB Atlas')
     })
@@ -19,7 +20,7 @@ mongoose.connect('mongodb+srv://Geoff:E7VX4v6VZ2MBvBA@cluster0.nq3nb.mongodb.net
     })
 
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://67e47ae99ae1.ngrok.io')
+    res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-type, Authorization')
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
     next()

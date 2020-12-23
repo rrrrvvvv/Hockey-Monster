@@ -7,8 +7,8 @@ exports.team = (req, res, next) => {
 
     try {
         let params = {
-            client_id: 'dj0yJmk9dk1xak1OaVIyczdLJmQ9WVdrOVdHczVhR1ZvVnpVbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWJi',
-            client_Secret: '4f2e868f7c73d8a2abc290ef48b6fbbd4d627d0f',
+            client_id: '--',
+            client_Secret: '--',
             redirect_uri: "https://a8c5eb3cce6e.ngrok.io/getranks/rankings",
             response_type: "code"
         }
@@ -100,8 +100,8 @@ exports.getAccessToken = (req, res, next) => {
         const code = req.body.code
 
         const params = {
-            client_id: 'dj0yJmk9dk1xak1OaVIyczdLJmQ9WVdrOVdHczVhR1ZvVnpVbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWJi',
-            client_Secret: '4f2e868f7c73d8a2abc290ef48b6fbbd4d627d0f',
+            client_id: '--',
+            client_Secret: '--',
             redirect_uri: "https://a8c5eb3cce6e.ngrok.io/getranks/rankings",
             code: code,
             grant_type: "authorization_code"

@@ -1,9 +1,10 @@
 # Hockey-Monster
 
-This is a micropayment enabled fantasy hockey helped that uses Express, Node, Mongo, and D3. Upon paying the fee, the user will get customized fantasy hockey recommendations
+This site is using MONGO, Express, D3, and NodeJS to create a web app that will serve users customized fantasy hockey advice based on the link they provide to the interface. It's still a work in progress.
 
-This service takes player from the NHL API, reads them into MONGO, and then performs calculations on them to assign them scores based on how well they have performed, for a given league setting
+Player database is populated by making calls to the NHL API, and then analysis is done on the players to give a score corresponding to how well they perform. 
 
-These scores are then displayed in a D3 visualization
+This data is then served up as a chart, using D3.
 
-Currently, there is no fantasy hockey service that takes into account specific league settings, so this one would be a first.
+The goal is to, for a micropayment using moneybutton, allow users to have their specific team analyzed and the scoring algorithm adpated to their specific league settings. 
+
